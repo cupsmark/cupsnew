@@ -85,17 +85,17 @@ public class HelperGlobal {
         return false;
     }
 
-    public static String getDevId(Context c) {
+    public static String getDeviceID(Context c) {
         TelephonyManager tm = (TelephonyManager) c.getSystemService(Context.TELEPHONY_SERVICE);
         return tm.getDeviceId();
     }
 
-    public static String get_network_provider(Context c) {
+    public static String getNetworkProvider(Context c) {
         TelephonyManager tm = (TelephonyManager) c.getSystemService(Context.TELEPHONY_SERVICE);
         return tm.getNetworkOperatorName();
     }
 
-    public static String getCountryId(Context c) {
+    public static String getCountryID(Context c) {
         String result = "";
         TelephonyManager tm = (TelephonyManager) c.getSystemService(Context.TELEPHONY_SERVICE);
         if (tm.getPhoneType() == TelephonyManager.PHONE_TYPE_CDMA) {
@@ -163,7 +163,7 @@ public class HelperGlobal {
         return result;
     }
 
-    public static Bitmap exif_bitmap(String file) {
+    public static Bitmap getExifBitmap(String file) {
         Bitmap result = null;
         BitmapFactory.Options bounds = new BitmapFactory.Options();
         bounds.inJustDecodeBounds = true;

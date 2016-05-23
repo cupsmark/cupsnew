@@ -673,6 +673,6 @@ public class HelperImage {
         return mGPUImage.getBitmapWithFilterApplied();
     }
 
-    
+
 }
 
