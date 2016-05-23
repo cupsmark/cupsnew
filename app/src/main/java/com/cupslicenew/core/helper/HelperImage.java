@@ -9,10 +9,13 @@ import android.graphics.BitmapFactory;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.LinearGradient;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
@@ -26,6 +29,13 @@ import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
+
+import jp.co.cyberagent.android.gpuimage.GPUImage;
+import jp.co.cyberagent.android.gpuimage.GPUImageBrightnessFilter;
+import jp.co.cyberagent.android.gpuimage.GPUImageContrastFilter;
+import jp.co.cyberagent.android.gpuimage.GPUImageFilterGroup;
+import jp.co.cyberagent.android.gpuimage.GPUImageSaturationFilter;
+import jp.co.cyberagent.android.gpuimage.GPUImageVignetteFilter;
 
 /**
  * Created by ekobudiarto on 5/23/16.
@@ -565,5 +575,104 @@ public class HelperImage {
         Bitmap resizedBitmap = Bitmap.createScaledBitmap(bm, newWidth, newHeight, true);
         return resizedBitmap;
     }
+
+    protected static float cleanValue(float p_val, float p_limit)
+    {
+        return Math.min(p_limit, Math.max(-p_limit, p_val));
+    }
+
+    public static Bitmap doBrightness(GPUImage mGPUImage, Bitmap src, int value)
+    {
+        GPUImageBrightnessFilter bright = new GPUImageBrightnessFilter();
+        bright.setBrightness(range(value, -0.4f, 0.4f));
+        mGPUImage.setImage(src);
+        mGPUImage.setFilter(bright);
+        return mGPUImage.getBitmapWithFilterApplied();
+    }
+
+    public static Bitmap doContrast(GPUImage mGPUImage, Bitmap src, int value)
+    {
+        GPUImageContrastFilter contrast = new GPUImageContrastFilter();
+        contrast.setContrast(range(value, 0.0f, 2.0f));
+        mGPUImage.setImage(src);
+        mGPUImage.setFilter(contrast);
+        return mGPUImage.getBitmapWithFilterApplied();
+    }
+
+    public static Bitmap doSaturation(GPUImage mGPUImage, Bitmap src, int value)
+    {
+        GPUImageSaturationFilter saturation = new GPUImageSaturationFilter();
+        saturation.setSaturation(range(value, 0.0f, 2.0f));
+        mGPUImage.setImage(src);
+        mGPUImage.setFilter(saturation);
+        return mGPUImage.getBitmapWithFilterApplied();
+    }
+
+    public static Bitmap doColorBalance(Bitmap src, float values)
+    {
+        int w = src.getWidth();
+        int h = src.getHeight();
+        float value = cleanValue(values, 180f) / 180f * (float) Math.PI;
+
+        float cosVal = (float) Math.cos(value);
+        float sinVal = (float) Math.sin(value);
+        float lumR = 0.213f;
+        float lumG = 0.715f;
+        float lumB = 0.072f;
+
+        float[] mat = new float[]{
+                lumR + cosVal * (1 - lumR) + sinVal * (-lumR), lumG + cosVal * (-lumG) + sinVal * (-lumG), lumB + cosVal * (-lumB) + sinVal * (1 - lumB), 0, 0,
+                lumR + cosVal * (-lumR) + sinVal * (0.143f), lumG + cosVal * (1 - lumG) + sinVal * (0.140f), lumB + cosVal * (-lumB) + sinVal * (-0.283f), 0, 0,
+                lumR + cosVal * (-lumR) + sinVal * (-(1 - lumR)), lumG + cosVal * (-lumG) + sinVal * (lumG), lumB + cosVal * (1 - lumB) + sinVal * (lumB), 0, 0,
+                0f, 0f, 0f, 1f, 0f,
+                0f, 0f, 0f, 0f, 1f
+        };
+        Bitmap bitmapResult = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        Canvas canvasResult = new Canvas(bitmapResult);
+        Paint paint = new Paint();ColorMatrix colorMatrix = new ColorMatrix();
+        colorMatrix.set(mat);
+        ColorMatrixColorFilter filter = new ColorMatrixColorFilter(colorMatrix);
+        paint.setColorFilter(filter);
+        canvasResult.drawBitmap(src, 0, 0, paint);
+        return bitmapResult;
+    }
+
+    public static Bitmap doBW(Bitmap src, float value)
+    {
+        int w = src.getWidth();
+        int h = src.getHeight();
+        float val = value / 100;
+
+
+        Bitmap bitmapResult = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        Canvas canvasResult = new Canvas(bitmapResult);
+        Paint paint = new Paint();
+        ColorMatrix colorMatrix = new ColorMatrix();
+        colorMatrix.set(new float[]{val, val, val, 0, 0, //red
+                val, val, val, 0, 0, //green
+                val, val, val, 0, 0, //blue
+                0, 0, 0, 1, 0    });
+
+        ColorMatrixColorFilter filter = new ColorMatrixColorFilter(colorMatrix);
+        paint.setColorFilter(filter);
+        canvasResult.drawBitmap(src, 0, 0, paint);
+        return bitmapResult;
+    }
+
+    public static Bitmap doVignette(GPUImage mGPUImage, Bitmap src, int value)
+    {
+        PointF centerPoint = new PointF();
+        centerPoint.x = 0.5f;
+        centerPoint.y = 0.5f;
+
+        GPUImageVignetteFilter filter = new GPUImageVignetteFilter();
+        filter.setVignetteCenter(centerPoint);
+        filter.setVignetteStart(range(value, 0.75f, 0.0f));
+        mGPUImage.setImage(src);
+        mGPUImage.setFilter(filter);
+        return mGPUImage.getBitmapWithFilterApplied();
+    }
+
+    
 }
 
