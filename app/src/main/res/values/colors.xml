@@ -5,6 +5,9 @@
     <color name="colorAccent">#FF4081</color>
 
     <color name="base_white">#FFFFFF</color>
-    
-    <color name="v3_bg_intro">#eff1f6</color>
+    <color name="base_red">#bb123b</color>
+    <color name="base_pink">#e54b4d</color>
+    <color name="base_black">#000000</color>
+    <color name="base_blue">#00b1e7</color>
+    <color name="base_gray">#c8c8c8</color>
 </resources>
