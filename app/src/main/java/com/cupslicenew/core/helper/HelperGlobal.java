@@ -36,6 +36,13 @@ import java.util.Locale;
  */
 public class HelperGlobal {
 
+    public interface ImagePusher{
+
+        void onImageResult(Bitmap src, int featureType);
+    }
+
+
+
     /*public static String getJS(String url) {
         InputStream is = null;
         String result = "";
