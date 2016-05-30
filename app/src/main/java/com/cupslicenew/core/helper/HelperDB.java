@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.crashlytics.android.Crashlytics;
+import com.cupslicenew.core.model.MAds;
 import com.cupslicenew.core.model.MEffect;
 import com.cupslicenew.core.model.MEffectCategory;
 import com.cupslicenew.core.model.MFrame;
@@ -722,4 +723,74 @@ public class HelperDB extends SQLiteOpenHelper {
     }
 
 
+    //ADS
+    public void addAds(MAds ads)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(HelperColumn.COLUMN_ADS_ID, ads.getAdsID());
+        values.put(HelperColumn.COLUMN_ADS_CATEGORY, ads.getAdsCategory());
+        values.put(HelperColumn.COLUMN_ADS_STATE, ads.getAdsState());
+        values.put(HelperColumn.COLUMN_ADS_NEXT_TIME, ads.getAdsNextTime());
+        values.put(HelperColumn.COLUMN_ADS_OVERLAY, ads.getAdsOverlay());
+        db.insert(HelperColumn.TABLE_ADS, null, values);
+        db.close();
+    }
+
+    public int updateAds(MAds ads) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(HelperColumn.COLUMN_ADS_ID, ads.getAdsID());
+        values.put(HelperColumn.COLUMN_ADS_CATEGORY, ads.getAdsCategory());
+        values.put(HelperColumn.COLUMN_ADS_STATE, ads.getAdsState());
+        values.put(HelperColumn.COLUMN_ADS_NEXT_TIME, ads.getAdsNextTime());
+        values.put(HelperColumn.COLUMN_ADS_OVERLAY, ads.getAdsOverlay());
+
+        return db.update(HelperColumn.TABLE_ADS, values, HelperColumn.COLUMN_ADS_ID + " = ?",
+                new String[] { String.valueOf(ads.getAdsID()) });
+    }
+
+    public List<MAds> getAllAds() {
+        List<MAds> adsList = new ArrayList<MAds>();
+        String selectQuery = "SELECT  * FROM " + HelperColumn.TABLE_ADS;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                MAds ads = new MAds();
+                ads.setAdsID(cursor.getString(0));
+                ads.setAdsCategory(cursor.getString(1));
+                ads.setAdsState(cursor.getString(2));
+                ads.setAdsNextTime(cursor.getString(3));
+                ads.setAdsOverlay(cursor.getString(4));
+                adsList.add(ads);
+            } while (cursor.moveToNext());
+        }
+        return adsList;
+    }
+
+    public MAds getAdsById(String id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(HelperColumn.TABLE_ADS, new String[] { HelperColumn.COLUMN_ADS_ID,
+                        HelperColumn.COLUMN_ADS_CATEGORY, HelperColumn.COLUMN_ADS_STATE, HelperColumn.COLUMN_ADS_NEXT_TIME, HelperColumn.COLUMN_ADS_OVERLAY}, HelperColumn.COLUMN_ADS_ID + "=?",
+                new String[] { String.valueOf(id) }, null, null, null,null);
+        MAds ads;
+        if (cursor.moveToFirst())
+        {
+            ads = new MAds();
+            ads.setAdsID(cursor.getString(0));
+            ads.setAdsCategory(cursor.getString(1));
+            ads.setAdsState(cursor.getString(2));
+            ads.setAdsNextTime(cursor.getString(3));
+            ads.setAdsOverlay(cursor.getString(4));
+        }
+        else
+        {
+            ads = new MAds();
+        }
+        return ads;
+    }
 }
