@@ -17,5 +17,8 @@
     <string name="camera_flashlight_off">Your flash camera has turn off</string>
     <string name="camera_error">You have some problem with your camera, Please restart the app</string>
     <string name="title_activity_base">BaseActivity</string>
+    <string name="title_activity_main">MainActivity</string>
+
+    <string name="hello_world">Hello world!</string>
 
 </resources>

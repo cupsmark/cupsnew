@@ -5,13 +5,13 @@
     android:background="@color/base_white" >
 
     <ImageView
-        android:id="@+id/image_intro"
+        android:id="@+id/intro_imageview"
         android:layout_width="170dp"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:adjustViewBounds="true"
         android:contentDescription="@string/app_name"
-        android:scaleType="centerInside"/>
+        android:scaleType="centerInside" />
 
 </RelativeLayout>

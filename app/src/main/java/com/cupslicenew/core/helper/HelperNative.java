@@ -9,5 +9,5 @@ public class HelperNative {
         System.loadLibrary("cupslice-library");
     }
 
-    //public static native String getLink(int i);
+    public static native String getLink(int i);
 }

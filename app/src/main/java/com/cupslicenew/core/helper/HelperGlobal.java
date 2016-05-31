@@ -1,7 +1,5 @@
 package com.cupslicenew.core.helper;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -24,16 +22,13 @@ import android.util.Log;
 import android.view.View;
 
 import com.cupslicenew.R;
-import com.cupslicenew.activity.BaseActivity;
+import com.cupslicenew.core.BaseActivity;
 import com.cupslicenew.core.model.MHistory;
+import com.cupslicenew.core.BaseFragment;
 import com.cupslicenew.view.ViewDialogConfirm;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
-
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -41,13 +36,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Created by ekobudiarto on 5/23/16.
@@ -64,6 +59,16 @@ public class HelperGlobal {
         void onImageResult(Bitmap src, int featureType);
     }
 
+    public interface FragmentInterface{
+        void onNavigate(BaseFragment fragmentSrc, Map<String, String> parameter);
+    }
+
+    public static String GU(int obj)
+    {
+        String res = "";
+        res = HelperNative.getLink(obj);
+        return res;
+    }
 
 
     /*public static String getJS(String url) {
