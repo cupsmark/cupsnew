@@ -83,9 +83,9 @@ public class HelperFBMessenger {
                         .build();
         if (messenger)
         {
-            /*DBHelper helper = new DBHelper(activity);
+            HelperDB helper = new HelperDB(activity);
             helper.resetHistory();
-            helper.close();*/
+            helper.close();
             MessengerUtils.finishShareToMessenger(activity, shareToMessengerParams);
         }
         else

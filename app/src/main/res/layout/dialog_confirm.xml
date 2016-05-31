@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/dialog_exit"
+    android:layout_width="270dp"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="@dimen/padding_large"
+    android:layout_marginRight="@dimen/padding_large"
+    android:background="@color/base_gray" >
+
+    <LinearLayout
+        android:id="@+id/linear_dialog_exit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:background="@color/base_gray"
+        android:orientation="vertical" >
+
+        <ImageView
+            android:id="@+id/dialog_exit_imageview"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/padding_medium"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/app_name"
+            android:scaleType="centerInside"
+            android:src="@drawable/logo_company_red" />
+
+        <LinearLayout
+            android:id="@+id/dialog_exit_linear_sub"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border_bottom_gray"
+            android:clickable="true"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/padding_medium"
+            android:paddingLeft="@dimen/padding_large"
+            android:paddingRight="@dimen/padding_large"
+            android:paddingTop="@dimen/padding_medium" >
+
+            <com.cupslicenew.view.ViewText
+                android:id="@+id/dialog_exit_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@color/base_gray"
+                android:gravity="center"
+                android:textColor="@color/base_color_normal"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <com.cupslicenew.view.ViewButton
+        android:id="@+id/dialog_exit_button_cancel"
+        android:layout_width="130dp"
+        android:layout_height="45dp"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/linear_dialog_exit"
+        android:background="@android:color/transparent"
+        android:text="@string/base_string_cancel"
+        android:textColor="@color/base_color_normal"
+        android:textSize="18sp" />
+
+    <com.cupslicenew.view.ViewButton
+        android:id="@+id/dialog_exit_button_yes"
+        android:layout_width="130dp"
+        android:layout_height="45dp"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/linear_dialog_exit"
+        android:background="@android:color/transparent"
+        android:text="@string/base_string_ok"
+        android:textColor="@color/base_color_normal"
+        android:textSize="18sp" />
+    
+
+</RelativeLayout>

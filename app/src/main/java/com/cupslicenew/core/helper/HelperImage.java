@@ -44,7 +44,7 @@ public class HelperImage {
 
 
 
-    public Bitmap doHighlight(Bitmap src) {
+    public static Bitmap doHighlight(Bitmap src) {
         Bitmap bmOut = Bitmap.createBitmap(src.getWidth() + 96, src.getHeight() + 96, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bmOut);
         canvas.drawColor(0, PorterDuff.Mode.CLEAR);
@@ -60,7 +60,7 @@ public class HelperImage {
         return bmOut;
     }
 
-    public Bitmap doInvert(Bitmap src) {
+    public static Bitmap doInvert(Bitmap src) {
         Bitmap bmOut = Bitmap.createBitmap(src.getWidth(), src.getHeight(), src.getConfig());
         int A, R, G, B;
         int pixelColor;
@@ -82,7 +82,7 @@ public class HelperImage {
         return bmOut;
     }
 
-    public Bitmap doGamma(Bitmap src) {
+    public static Bitmap doGamma(Bitmap src) {
         double red = 0.6;
         double green = 0.6;
         double blue = 0.6;
@@ -123,7 +123,7 @@ public class HelperImage {
         return bmOut;
     }
 
-    public Bitmap doGreyscale(Bitmap src) {
+    public static Bitmap doGreyscale(Bitmap src) {
 
         final double GS_RED = 0.299;
         final double GS_GREEN = 0.587;
@@ -150,7 +150,7 @@ public class HelperImage {
         return bmOut;
     }
 
-    public Bitmap doColorFilter(Bitmap src) {
+    public static Bitmap doColorFilter(Bitmap src) {
 
         double red = 50;
         double green = 50;
@@ -178,14 +178,14 @@ public class HelperImage {
         return bmOut;
     }
 
-    public Bitmap rotate(Bitmap src, float degree) {
+    public static Bitmap rotate(Bitmap src, float degree) {
 
         Matrix matrix = new Matrix();
         matrix.postRotate(degree);
         return Bitmap.createBitmap(src, 0, 0, src.getWidth(), src.getHeight(), matrix, true);
     }
 
-    public Bitmap doRoundedCorner(Bitmap src, float round) {
+    public static Bitmap doRoundedCorner(Bitmap src, float round) {
 
         int width = src.getWidth();
         int height = src.getHeight();
@@ -223,7 +223,7 @@ public class HelperImage {
         return result;
     }
 
-    public Bitmap doFlip(Bitmap src, int type) {
+    public static Bitmap doFlip(Bitmap src, int type) {
 
         // type 1 = flip vertical
         // type 2 = flip horizontal
@@ -239,7 +239,7 @@ public class HelperImage {
         return Bitmap.createBitmap(src, 0, 0, src.getWidth(), src.getHeight(), matrix, true);
     }
 
-    public Bitmap doFilterFlea(Bitmap src) {
+    public static Bitmap doFilterFlea(Bitmap src) {
 
         int width = src.getWidth();
         int height = src.getHeight();
@@ -262,7 +262,7 @@ public class HelperImage {
         return bmOut;
     }
 
-    public Bitmap doFilterBlack(Bitmap src) {
+    public static Bitmap doFilterBlack(Bitmap src) {
 
         int COLOR_MIN = 0x00;
         int COLOR_MAX = 0xFF;
@@ -291,7 +291,7 @@ public class HelperImage {
         return bmOut;
     }
 
-    public Bitmap doFilterSnow(Bitmap src) {
+    public static Bitmap doFilterSnow(Bitmap src) {
 
         int COLOR_MIN = 0x00;
         int COLOR_MAX = 0xFF;
@@ -318,7 +318,7 @@ public class HelperImage {
         return bmOut;
     }
 
-    public Bitmap doShading(Bitmap src) {
+    public static Bitmap doShading(Bitmap src) {
 
         int shadingColor = 0xff00ff00;//this.shadingColor;
         int width = src.getWidth();
@@ -338,7 +338,7 @@ public class HelperImage {
         return bmOut;
     }
 
-    public Bitmap doReflection(Bitmap src) {
+    public static Bitmap doReflection(Bitmap src) {
 
         final int reflectionGap = 4;
         int width = src.getWidth();
@@ -364,7 +364,7 @@ public class HelperImage {
         return bitmapWithReflection;
     }
 
-    public Bitmap doMerge(Bitmap src, Bitmap dst) {
+    public static Bitmap doMerge(Bitmap src, Bitmap dst) {
         Bitmap cs = null;
         Bitmap c = src;
         Bitmap s = dst;
@@ -388,7 +388,7 @@ public class HelperImage {
         return cs;
     }
 
-    private Bitmap doAlpha(float alpha, Bitmap src)
+    private static Bitmap doAlpha(float alpha, Bitmap src)
     {
         Paint paint = new Paint();
         paint.setFlags(Paint.FILTER_BITMAP_FLAG);
@@ -461,6 +461,30 @@ public class HelperImage {
 
         canvas.drawRect(0, 0, width, height, maskedPaint);
 
+        return outBitmap;
+    }
+
+    public static Bitmap setTextColor(int color, Bitmap source, float opac) {
+        if (color == 0) {
+            color = 0xffffffff;
+        }
+        int o = (int) opac;
+        Bitmap maskBitmap = source;
+        final int width = maskBitmap.getWidth();
+        final int height = maskBitmap.getHeight();
+
+        Paint p = new Paint();
+        p.setAlpha(o);
+
+        Bitmap outBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(outBitmap);
+        canvas.drawBitmap(maskBitmap, 0, 0, p);
+
+        Paint maskedPaint = new Paint();
+        maskedPaint.setColor(color);
+        maskedPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_ATOP));
+
+        canvas.drawRect(0, 0, width, height, maskedPaint);
         return outBitmap;
     }
 

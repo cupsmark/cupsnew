@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_rounded_gray"
+    android:padding="10dp">
+
+    <ImageView
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:scaleType="centerInside"
+        android:id="@+id/dialog_fbmessenger_imageview"
+        android:layout_gravity="center"
+        android:contentDescription="@string/app_name"
+        android:layout_marginBottom="10dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+        <!-- Include this in your layout -->
+        <include layout="@layout/messenger_button_send_blue_large" />
+
+    </LinearLayout>
+
+    <com.cupslicenew.view.ViewButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/dialog_fbmessenger_button_cancel"
+        android:text="@string/base_string_cancel"
+        android:textColor="@color/base_color_normal"
+        android:textSize="18sp"
+        android:gravity="center"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:background="@android:color/transparent"/>
+
+</LinearLayout>

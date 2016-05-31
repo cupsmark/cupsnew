@@ -102,5 +102,19 @@ public class ViewText extends TextView{
 				"fonts/Lato-Semibold.ttf");
 		setTypeface(font, Typeface.NORMAL);
 	}
+
+	public void setItalic()
+	{
+		Typeface font = Typeface.createFromAsset(getContext().getAssets(),
+				"fonts/Lato-Italic.ttf");
+		setTypeface(font, Typeface.NORMAL);
+	}
+
+	public void setMedium()
+	{
+		Typeface font = Typeface.createFromAsset(getContext().getAssets(),
+				"fonts/Lato-Medium.ttf");
+		setTypeface(font, Typeface.NORMAL);
+	}
 	
 }

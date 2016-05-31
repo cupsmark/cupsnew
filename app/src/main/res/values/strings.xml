@@ -2,4 +2,20 @@
     <string name="app_name">CupsliceNew</string>
     <string name="action_settings">Settings</string>
     <string name="facebook_app_id">348846111886362</string>
+
+    <string name="base_string_cancel">Cancel</string>
+    <string name="base_string_yes">Yes</string>
+    <string name="base_string_ok">Ok</string>
+
+    <string name="message_exit">Are you sure want to exit application?</string>
+    <string name="message_rate">Yoiur 5 stars rate are what keep us growing</string>
+
+
+    <string name="camera_no_feature">Your device has no Camera</string>
+    <string name="camera_no_flashlight">Your Camera has no flash light</string>
+    <string name="camera_flashlight_on">Your flash camera has turn on</string>
+    <string name="camera_flashlight_off">Your flash camera has turn off</string>
+    <string name="camera_error">You have some problem with your camera, Please restart the app</string>
+    <string name="title_activity_base">BaseActivity</string>
+
 </resources>
