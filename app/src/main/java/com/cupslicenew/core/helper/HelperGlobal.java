@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.Point;
 import android.media.ExifInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -19,7 +20,9 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
+import android.view.WindowManager;
 
 import com.cupslicenew.R;
 import com.cupslicenew.core.BaseActivity;
@@ -29,6 +32,8 @@ import com.cupslicenew.view.ViewDialogConfirm;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,6 +41,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -70,41 +79,48 @@ public class HelperGlobal {
         return res;
     }
 
-
-    /*public static String getJS(String url) {
-        InputStream is = null;
+    public static String getJSON(String urlData)
+    {
         String result = "";
-        int timeoutConnection = 180000;
-        // HTTP
-        try {
-            HttpParams param = new BasicHttpParams();
-            HttpConnectionParams.setConnectionTimeout(param, timeoutConnection);
-            HttpClient httpclient = new DefaultHttpClient(param); // for port 80 requests!
-            HttpGet httpGet = new HttpGet(url);
-            HttpResponse response = httpclient.execute(httpGet);
-            HttpEntity entity = response.getEntity();
-            is = entity.getContent();
-        } catch (Exception e) {
-            return null;
-        }
+        try{
+            URL url = new URL(urlData);
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setDoInput(true);
+            urlConnection.setConnectTimeout(20 * 1000);
+            urlConnection.setReadTimeout(20 * 1000);
 
-        // Read response to string
-        try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "utf-8"), 8);
-            StringBuilder sb = new StringBuilder();
-            String line = "";
-            while ((line = reader.readLine()) != null) {
-                sb.append(line + "\n");
+            // Check the connection status
+            if(urlConnection.getResponseCode() == 200)
+            {
+                // if response code = 200 ok
+                InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+
+                // Read the BufferedInputStream
+                BufferedReader r = new BufferedReader(new InputStreamReader(in));
+                StringBuilder sb = new StringBuilder();
+                String line;
+                while ((line = r.readLine()) != null) {
+                    sb.append(line);
+                }
+                result = sb.toString();
+                urlConnection.disconnect();
             }
-            is.close();
-            result = sb.toString();
-        } catch (Exception e) {
-            return null;
+            else
+            {
+               result = "";
+            }
+        }catch (MalformedURLException e){
+            //e.printStackTrace();
+            result = "";
+        }catch(IOException e){
+            //e.printStackTrace();
+            result = "";
+        }finally {
+
         }
-
-
+        // Return the data from specified url
         return result;
-    }*/
+    }
 
     public static boolean checkConnection(Context context) {
         ConnectivityManager connectivity = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -522,5 +538,35 @@ public class HelperGlobal {
         hist.set_history_id(newid);
         hist.set_history_file(newfile);
         history_conn.addHistory(hist);
+    }
+
+    public static int getScreenSize(Context context, String param) {
+        int size = 0;
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        if (android.os.Build.VERSION.SDK_INT > 12) {
+            Point sizePoint = new Point();
+            display.getSize(sizePoint);
+            if(param.equals("w"))
+            {
+                size = sizePoint.x;
+            }
+            else
+            {
+                size = sizePoint.y;
+            }
+
+        } else {
+            if(param.equals("w"))
+            {
+                size = display.getWidth();
+            }
+            else
+            {
+                size = display.getHeight();
+            }
+        }
+
+        return size;
     }
 }
