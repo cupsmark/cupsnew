@@ -511,6 +511,7 @@ public class HelperGlobal {
         dialog.show();
 
         dialog.setTextMessage(activity.getResources().getString(R.string.message_exit));
+        dialog.getButtonOK().setRegular();
         dialog.getButtonOK().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -521,6 +522,7 @@ public class HelperGlobal {
                 activity.finish();
             }
         });
+        dialog.getButtonCancel().setRegular();
         dialog.getButtonCancel().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

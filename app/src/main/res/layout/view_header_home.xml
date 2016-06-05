@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:scaleType="centerInside"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/bg_header_home"
+            android:id="@+id/view_header_home_bg"/>
+
+        <ImageView
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:scaleType="centerInside"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/logo_white"
+            android:id="@+id/view_header_home_logo"
+            android:layout_centerHorizontal="true"
+            android:layout_alignTop="@+id/view_header_home_bg"
+            android:layout_marginTop="10dp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp">
+
+            <com.cupslicenew.view.ViewText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/base_white"
+                android:textSize="20sp"
+                android:text="TOP 10 BEST PHOTO THIS WEEK"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:id="@+id/view_header_home_title" />
+
+            <com.cupslicenew.view.ViewText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/base_white"
+                android:textSize="16sp"
+                android:text="lorem ipsum dolor sit amet"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:id="@+id/view_header_home_desc" />
+
+            <com.cupslicenew.view.ViewButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/base_blue"
+                android:textColor="@color/base_white"
+                android:textSize="17sp"
+                android:text="See All"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="center_horizontal"
+                android:id="@+id/view_header_home_button_all"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_alignBottom="@+id/view_header_home_bg"
+            android:layout_marginBottom="10dp"
+            android:layout_centerHorizontal="true">
+
+            <ImageButton
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:scaleType="centerInside"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/icon_invite"
+                android:background="@android:color/transparent"
+                android:id="@+id/view_header_home_invite"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"/>
+
+            <ImageButton
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:scaleType="centerInside"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/icon_facebook"
+                android:background="@android:color/transparent"
+                android:id="@+id/view_header_home_facebook"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"/>
+
+            <ImageButton
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:scaleType="centerInside"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/icon_instagram"
+                android:background="@android:color/transparent"
+                android:id="@+id/view_header_home_instagram"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"/>
+
+            <ImageButton
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:scaleType="centerInside"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/icon_email"
+                android:background="@android:color/transparent"
+                android:id="@+id/view_header_home_email"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"/>
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>

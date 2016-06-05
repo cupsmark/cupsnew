@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/padding_medium"
+    android:background="@drawable/selector_listview_default">
+
+    <ImageView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:id="@+id/recommended_item_icon"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:adjustViewBounds="true"
+        android:scaleType="centerInside"
+        android:contentDescription="@string/app_name" />
+
+    <com.cupslicenew.view.ViewText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/pagetitle_recommended"
+        android:id="@+id/recommended_item_title"
+        android:layout_alignParentRight="false"
+        android:layout_toRightOf="@+id/recommended_item_icon"
+        android:layout_marginLeft="10dp"
+        android:textSize="19sp"
+        android:textColor="@color/base_gray" />
+
+    <com.cupslicenew.view.ViewText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/pagetitle_recommended"
+        android:id="@+id/recommended_item_desc"
+        android:layout_alignParentRight="false"
+        android:layout_toRightOf="@+id/recommended_item_icon"
+        android:layout_below="@+id/recommended_item_title"
+        android:layout_marginLeft="10dp"
+        android:textSize="15sp"
+        android:textColor="@color/base_gray" />
+
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:id="@+id/recommended_item_coin"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:adjustViewBounds="true"
+        android:scaleType="centerInside"
+        android:contentDescription="@string/app_name"
+        android:visibility="gone"/>
+
+</RelativeLayout>

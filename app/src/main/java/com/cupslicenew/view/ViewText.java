@@ -86,7 +86,7 @@ public class ViewText extends TextView{
 	{
 		Typeface font = Typeface.createFromAsset(getContext().getAssets(),
 				"fonts/Lato-Bold.ttf");
-		setTypeface(font, Typeface.NORMAL);
+		setTypeface(font, Typeface.BOLD);
 	}
 	
 	public void setRegular()
@@ -107,7 +107,7 @@ public class ViewText extends TextView{
 	{
 		Typeface font = Typeface.createFromAsset(getContext().getAssets(),
 				"fonts/Lato-Italic.ttf");
-		setTypeface(font, Typeface.NORMAL);
+		setTypeface(font, Typeface.ITALIC);
 	}
 
 	public void setMedium()

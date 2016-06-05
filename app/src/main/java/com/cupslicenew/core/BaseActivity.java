@@ -3,6 +3,8 @@ package com.cupslicenew.core;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 
 import com.cupslicenew.R;
@@ -25,7 +27,12 @@ public class BaseActivity extends FragmentActivity implements HelperGlobal.Fragm
 
     @Override
     public void onNavigate(BaseFragment fragmentSrc, Map<String, String> parameter) {
-
+        fragmentSrc.setParameter(parameter);
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right);
+        ft.add(R.id.main_container_fragment, fragmentSrc);
+        ft.commit();
     }
 
     private boolean removeFragment()
@@ -38,6 +45,19 @@ public class BaseActivity extends FragmentActivity implements HelperGlobal.Fragm
                 BaseFragment fragment = (BaseFragment) lists.get(i);
                 if(fragment != null)
                 {
+                    List<Fragment> subFragment = fragment.getChildFragmentManager().getFragments();
+                    if(subFragment != null)
+                    {
+                        for(int x = subFragment.size() - 1;x >= 0;x--)
+                        {
+                            BaseFragment fragmentChild = (BaseFragment) subFragment.get(x);
+                            if(fragmentChild != null)
+                            {
+                                fragment.getChildFragmentManager().beginTransaction().remove(fragmentChild).commit();
+                                return false;
+                            }
+                        }
+                    }
                     getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right).remove(fragment).commit();
                     return false;
                 }

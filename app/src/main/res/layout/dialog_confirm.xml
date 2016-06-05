@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:layout_marginLeft="@dimen/padding_large"
     android:layout_marginRight="@dimen/padding_large"
-    android:background="@color/base_gray" >
+    android:background="@color/base_white" >
 
     <LinearLayout
         android:id="@+id/linear_dialog_exit"
@@ -14,7 +14,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:background="@color/base_gray"
+        android:background="@color/base_white"
         android:orientation="vertical" >
 
         <ImageView
@@ -32,7 +32,7 @@
             android:id="@+id/dialog_exit_linear_sub"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/border_bottom_gray"
+            android:background="@color/base_white"
             android:clickable="true"
             android:orientation="horizontal"
             android:paddingBottom="@dimen/padding_medium"
@@ -45,7 +45,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:background="@color/base_gray"
+                android:background="@color/base_white"
                 android:gravity="center"
                 android:textColor="@color/base_color_normal"
                 android:textSize="18sp" />
@@ -62,7 +62,7 @@
         android:layout_below="@+id/linear_dialog_exit"
         android:background="@android:color/transparent"
         android:text="@string/base_string_cancel"
-        android:textColor="@color/base_color_normal"
+        android:textColor="@color/base_gray"
         android:textSize="18sp" />
 
     <com.cupslicenew.view.ViewButton
@@ -73,7 +73,7 @@
         android:layout_below="@+id/linear_dialog_exit"
         android:background="@android:color/transparent"
         android:text="@string/base_string_ok"
-        android:textColor="@color/base_color_normal"
+        android:textColor="@color/base_gray"
         android:textSize="18sp" />
     
 

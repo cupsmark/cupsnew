@@ -8,6 +8,7 @@ import android.widget.Toast;
 import com.cupslicenew.R;
 import com.cupslicenew.core.BaseActivity;
 import com.cupslicenew.fragment.FragmentCafeSlider;
+import com.cupslicenew.fragment.FragmentHome;
 
 public class MainActivity extends BaseActivity {
 
@@ -15,14 +16,25 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        Toast.makeText(MainActivity.this, "fuck that", Toast.LENGTH_LONG).show();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        addFragmentCafeSlider();
+        addFragmentHome();
+    }
+
+    private void addFragmentHome()
+    {
+        FragmentHome home = new FragmentHome();
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_in_right);
+        if(!home.isAdded())
+        {
+            ft.add(R.id.main_container_fragment, home);
+        }
+        ft.commit();
     }
 
     private void addFragmentCafeSlider()
