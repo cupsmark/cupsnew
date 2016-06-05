@@ -102,7 +102,6 @@ public class FragmentGallery extends BaseFragment {
         imagebutton_back = (ImageButton) activity.findViewById(R.id.gallery_imagebutton_back);
         listview_gallery = (ListView) activity.findViewById(R.id.gallery_listview);
 
-        listview_gallery.setAdapter(adapter);
         listview_gallery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -114,6 +113,7 @@ public class FragmentGallery extends BaseFragment {
                 fragmentInterface.onNavigate(galleryDetail, parameter);
             }
         });
+        listview_gallery.setAdapter(adapter);
         imagebutton_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -292,11 +292,10 @@ public class FragmentGallery extends BaseFragment {
             holder.text_path = (ViewText) convertView.findViewById(R.id.item_fragment_gallery_path);
             holder.text_path.setText(album_directory.get(position));
             holder.image_thumb = (CircularImageView) convertView.findViewById(R.id.item_fragment_gallery_thumb);
-            Picasso.with(activity).load(album_path.get(position)).into(holder.image_thumb, new Callback() {
+            Picasso.with(activity).load(album_path.get(position)).fit().centerCrop().into(holder.image_thumb, new Callback() {
                 @Override
                 public void onSuccess() {
                     holder.image_thumb.setAdjustViewBounds(true);
-                    holder.image_thumb.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                 }
 
                 @Override
