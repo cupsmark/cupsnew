@@ -2,10 +2,15 @@ package com.cupslicenew.fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,14 +18,18 @@ import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.cupslicenew.R;
 import com.cupslicenew.core.BaseActivity;
 import com.cupslicenew.core.BaseFragment;
+import com.cupslicenew.core.controller.ControllerStore;
 import com.cupslicenew.core.helper.HelperGlobal;
 import com.cupslicenew.core.helper.HelperGoogle;
+import com.cupslicenew.core.util.EndlessRecyclerViewScrollListener;
 import com.cupslicenew.core.view.ViewGridWithHeader;
 import com.cupslicenew.view.ViewButton;
 import com.google.android.gms.analytics.Tracker;
@@ -42,13 +51,16 @@ public class FragmentStore extends BaseFragment {
     public static final String TAG_FRAGMENT_STORE = "tag:fragment-store";
 
     Tracker tracker;
-    int tabIndex = 1;
+    int tabIndex = 1, l = 6, o = 0;
     ImageButton imagebutton_back, imagebutton_home;
-    ViewGridWithHeader gridWithHeader;
+    RecyclerView recyclerView;
     View header;
     LayoutInflater inflater;
     ArrayList<String> product_id, product_title, product_example, product_price, product_client;
     StoreAdapter adapter;
+    boolean success = false, isThreadRun = false;
+    String message, tabState = "new", keyword = "", storeState = "stickers";
+    SearchTaskStore search;
 
     @Nullable
     @Override
@@ -95,13 +107,30 @@ public class FragmentStore extends BaseFragment {
         inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         imagebutton_back = (ImageButton) activity.findViewById(R.id.store_imagebutton_back);
         imagebutton_home = (ImageButton) activity.findViewById(R.id.store_imagebutton_home);
-        gridWithHeader = (ViewGridWithHeader) activity.findViewById(R.id.store_gridviewheader);
+        recyclerView = (RecyclerView) activity.findViewById(R.id.store_recyclerview);
 
-        header = inflater.inflate(R.layout.view_header_store, null);
-        gridWithHeader.addHeaderView(header);
-        addFragmentSlider();
-        gridWithHeader.setAdapter(adapter);
+        GridLayoutManager recycleLayoutManager = new GridLayoutManager(activity.getApplicationContext(), 2);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(recycleLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(adapter);
+        recyclerView.addOnItemTouchListener(new HelperGlobal.RecyclerTouchListener(activity.getApplicationContext(), recyclerView, new HelperGlobal.ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                Toast.makeText(activity, product_title.get(position), Toast.LENGTH_SHORT).show();
+            }
 
+            @Override
+            public void onLongClick(View view, int position) {
+
+            }
+        }));
+        recyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(recycleLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                getMore();
+            }
+        });
         imagebutton_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -114,20 +143,121 @@ public class FragmentStore extends BaseFragment {
                 back();
             }
         });
+        getList();
     }
 
-    private void addFragmentSlider()
+    private void getList()
     {
-        FragmentCafeSlider slider = new FragmentCafeSlider();
-        FragmentManager fm = getChildFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        ft.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right);
-        if(!slider.isAdded())
-        {
-            ft.add(R.id.view_header_store_container_fragment, slider);
-        }
-        ft.commit();
+        o = 0;
+        search = new SearchTaskStore(keyword);
+        search.setO(o);
+        search.setL(l);
+        search.execute();
     }
+
+    private void getMore()
+    {
+        search = new SearchTaskStore(keyword);
+        search.setO(o);
+        search.setL(l);
+        search.execute();
+    }
+
+    public class SearchTaskStore extends AsyncTask<Void, Integer, String>{
+        private boolean canceled = false, success = false;
+        String message, keyword = "";
+        ArrayList<String> tempid, tempexamp, tempprc, temptitle, tempclient;
+        int l = 6, o = 0;
+
+        public SearchTaskStore(String keyword)
+        {
+            this.keyword = keyword;
+        }
+        public void setL(int l)
+        {
+            this.l = l;
+        }
+
+        public void setO(int o)
+        {
+            this.o = o;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            tempid = new ArrayList<String>();
+            tempexamp = new ArrayList<String>();
+            tempprc = new ArrayList<String>();
+            temptitle = new ArrayList<String>();
+            tempclient = new ArrayList<String>();
+        }
+
+        @Override
+        protected String doInBackground(Void... params) {
+            if(!canceled)
+            {
+                ControllerStore store = new ControllerStore(activity);
+                store.setL(this.l);
+                store.setO(this.o);
+                store.setArea("a");
+                store.setURL(HelperGlobal.GU(159182));
+                store.setState(storeState);
+                store.setSorting(tabState);
+                store.isCategory(false);
+                store.setCategory(0);
+                store.executeListProduct();
+                if(store.getSuccess())
+                {
+                    tempid.addAll(store.getID());
+                    tempexamp.addAll(store.getFile());
+                    tempprc.addAll(store.getPrice());
+                    temptitle.addAll(store.getTitle());
+                    tempclient.addAll(store.getClient());
+                    FragmentStore.this.o = store.getOffset();
+                    success = true;
+                }
+                else {
+                    success = false;
+                    message = store.getMessage();
+                }
+            }
+            return "";
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            if(!canceled)
+            {
+                if(success)
+                {
+                    if(tempid.size() > 0)
+                    {
+                        for(int i = 0;i < tempid.size();i++)
+                        {
+                            product_id.add(tempid.get(i));
+                            product_example.add(tempexamp.get(i));
+                            product_title.add(temptitle.get(i));
+                            product_price.add(temptitle.get(i));
+                            product_client.add(tempclient.get(i));
+                        }
+                        adapter.notifyDataSetChanged();
+                    }
+                }
+                else
+                {
+                    Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+
+        public void cancel()
+        {
+            canceled = true;
+        }
+    }
+
     private void back()
     {
         activity.onBackPressed();
@@ -138,51 +268,19 @@ public class FragmentStore extends BaseFragment {
         return TAG_FRAGMENT_STORE;
     }
 
-    public class StoreAdapter extends BaseAdapter{
+    public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.StoreViewHolder>{
 
-        public StoreAdapter()
-        {
 
-        }
-
-        public void clear()
-        {
-            product_id.clear();
-            product_title.clear();
-            product_client.clear();
-            product_price.clear();
-            product_example.clear();
-        }
         @Override
-        public int getCount() {
-            return product_id.size();
+        public StoreViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View itemView = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_fragment_gallery_detail, parent, false);
+
+            return new StoreViewHolder(itemView);
         }
 
         @Override
-        public Object getItem(int position) {
-            Object[] object = new Object[5];
-            object[0] = product_id.get(position);
-            object[1] = product_title.get(position);
-            object[2] = product_example.get(position);
-            object[3] = product_price.get(position);
-            object[4] = product_client.get(position);
-            return object;
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return 0;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            final ViewHolder holder;
-            if(convertView == null)
-            {
-                convertView = inflater.inflate(R.layout.item_fragment_gallery_detail, null);
-            }
-            holder = new ViewHolder();
-            holder.imagethumb = (ImageView) convertView.findViewById(R.id.item_fragment_gallery_detail_thumb);
+        public void onBindViewHolder(final StoreViewHolder holder, int position) {
             Picasso.with(activity).load(product_example.get(position)).fit().centerCrop().into(holder.imagethumb, new Callback() {
                 @Override
                 public void onSuccess() {
@@ -195,13 +293,40 @@ public class FragmentStore extends BaseFragment {
 
                 }
             });
-            convertView.setTag(holder);
-            return convertView;
         }
 
-        class ViewHolder{
-            ImageView imagethumb;
+        @Override
+        public int getItemCount() {
+            return product_id.size();
         }
+
+        public class StoreViewHolder extends RecyclerView.ViewHolder{
+            public ImageView imagethumb;
+
+            public StoreViewHolder(View itemView) {
+                super(itemView);
+                imagethumb = (ImageView) itemView.findViewById(R.id.item_fragment_gallery_detail_thumb);
+            }
+        }
+
+        class LoadingViewHolder extends RecyclerView.ViewHolder {
+            public ProgressBar progressBar;
+
+            public LoadingViewHolder(View itemView) {
+                super(itemView);
+                progressBar = (ProgressBar) itemView.findViewById(R.id.view_footer_store_progressbar);
+            }
+        }
+
+        public void clear()
+        {
+            product_id.clear();
+            product_title.clear();
+            product_client.clear();
+            product_price.clear();
+            product_example.clear();
+        }
+
     }
 
 }
