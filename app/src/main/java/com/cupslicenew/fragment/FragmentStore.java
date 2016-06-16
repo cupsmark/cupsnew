@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -30,13 +31,17 @@ import com.cupslicenew.core.controller.ControllerStore;
 import com.cupslicenew.core.helper.HelperGlobal;
 import com.cupslicenew.core.helper.HelperGoogle;
 import com.cupslicenew.core.util.EndlessRecyclerViewScrollListener;
+import com.cupslicenew.core.util.RecyclerViewItemDecoration;
 import com.cupslicenew.core.view.ViewGridWithHeader;
 import com.cupslicenew.view.ViewButton;
+import com.cupslicenew.view.ViewSlideShow;
+import com.cupslicenew.view.ViewText;
 import com.google.android.gms.analytics.Tracker;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -109,11 +114,21 @@ public class FragmentStore extends BaseFragment {
         imagebutton_home = (ImageButton) activity.findViewById(R.id.store_imagebutton_home);
         recyclerView = (RecyclerView) activity.findViewById(R.id.store_recyclerview);
 
-        GridLayoutManager recycleLayoutManager = new GridLayoutManager(activity.getApplicationContext(), 2);
+
+        RecyclerViewItemDecoration paddingDecoration = new RecyclerViewItemDecoration(12);
+        final GridLayoutManager recycleLayoutManager = new GridLayoutManager(activity.getApplicationContext(), 2);
+        recyclerView.addItemDecoration(paddingDecoration);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(recycleLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
+        recycleLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup(){
+
+            @Override
+            public int getSpanSize(int position) {
+                return adapter.isHeader(position) ? recycleLayoutManager.getSpanCount() : 1;
+            }
+        });
         recyclerView.addOnItemTouchListener(new HelperGlobal.RecyclerTouchListener(activity.getApplicationContext(), recyclerView, new HelperGlobal.ClickListener() {
             @Override
             public void onClick(View view, int position) {
@@ -239,7 +254,7 @@ public class FragmentStore extends BaseFragment {
                             product_id.add(tempid.get(i));
                             product_example.add(tempexamp.get(i));
                             product_title.add(temptitle.get(i));
-                            product_price.add(temptitle.get(i));
+                            product_price.add(tempprc.get(i));
                             product_client.add(tempclient.get(i));
                         }
                         adapter.notifyDataSetChanged();
@@ -263,37 +278,80 @@ public class FragmentStore extends BaseFragment {
         activity.onBackPressed();
     }
 
+    private void setHeader(View view)
+    {
+
+    }
+
     @Override
     public String getFragmentTAG() {
         return TAG_FRAGMENT_STORE;
     }
 
-    public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.StoreViewHolder>{
+    public class StoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
+        private static final int TYPE_HEADER = 0;
+        private static final int TYPE_ITEM = 1;
 
         @Override
-        public StoreViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_fragment_gallery_detail, parent, false);
-
-            return new StoreViewHolder(itemView);
+        public int getItemViewType(int position) {
+            return isHeader(position) ?
+                    TYPE_HEADER : TYPE_ITEM;
         }
 
         @Override
-        public void onBindViewHolder(final StoreViewHolder holder, int position) {
-            Picasso.with(activity).load(product_example.get(position)).fit().centerCrop().into(holder.imagethumb, new Callback() {
-                @Override
-                public void onSuccess() {
-                    holder.imagethumb.setAdjustViewBounds(true);
-                    holder.imagethumb.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                }
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            if(viewType == TYPE_HEADER) {
+                View itemView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.view_header_store, parent, false);
 
-                @Override
-                public void onError() {
+                return new StoreHeader(itemView);
+            }
+            else
+            {
+                View itemView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.item_fragment_store, parent, false);
 
-                }
-            });
+                return new StoreViewHolder(itemView);
+            }
         }
+
+        @Override
+        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+            if(holder instanceof StoreHeader)
+            {
+                StoreHeader mainHolder = (StoreHeader) holder;
+                ViewSlideShow slideShow = new ViewSlideShow(activity);
+                slideShow.setDefaultImage();
+                mainHolder.containerSlider.addView(slideShow);
+                slideShow.extractContent();
+
+                mainHolder.text_categories.setRegular();
+                mainHolder.text_popular.setRegular();
+                mainHolder.text_new.setRegular();
+            }
+            else
+            {
+                final StoreViewHolder mainHolder = (StoreViewHolder) holder;
+                String price = (product_price.get(position).equals("0")) ? "Free" : product_price.get(position);
+                mainHolder.text_name.setSemiBold();
+                mainHolder.text_name.setText(product_title.get(position));
+                mainHolder.text_price.setText(price.toUpperCase(Locale.US));
+                Picasso.with(activity).load(product_example.get(position)).fit().centerCrop().into(mainHolder.imagethumb, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        mainHolder.imagethumb.setAdjustViewBounds(true);
+                        mainHolder.imagethumb.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                    }
+
+                    @Override
+                    public void onError() {
+
+                    }
+                });
+            }
+        }
+
 
         @Override
         public int getItemCount() {
@@ -301,20 +359,35 @@ public class FragmentStore extends BaseFragment {
         }
 
         public class StoreViewHolder extends RecyclerView.ViewHolder{
-            public ImageView imagethumb;
+            ImageView imagethumb;
+            ViewText text_name, text_price;
 
             public StoreViewHolder(View itemView) {
                 super(itemView);
-                imagethumb = (ImageView) itemView.findViewById(R.id.item_fragment_gallery_detail_thumb);
+                imagethumb = (ImageView) itemView.findViewById(R.id.item_fragment_store_image);
+                text_name = (ViewText) itemView.findViewById(R.id.item_fragment_store_name);
+                text_price = (ViewText) itemView.findViewById(R.id.item_fragment_store_price);
             }
         }
 
-        class LoadingViewHolder extends RecyclerView.ViewHolder {
-            public ProgressBar progressBar;
+        class StoreHeader extends RecyclerView.ViewHolder{
+            RelativeLayout containerSlider;
+            LinearLayout btn_categories, btn_new, btn_popular;
+            ImageButton icon_categories, icon_new, icon_popular;
+            ViewText text_categories, text_new, text_popular;
 
-            public LoadingViewHolder(View itemView) {
+            public StoreHeader(View itemView) {
                 super(itemView);
-                progressBar = (ProgressBar) itemView.findViewById(R.id.view_footer_store_progressbar);
+                containerSlider = (RelativeLayout) itemView.findViewById(R.id.view_header_store_slider);
+                btn_categories = (LinearLayout) itemView.findViewById(R.id.view_header_store_button_categories);
+                btn_new = (LinearLayout) itemView.findViewById(R.id.view_header_store_button_new);
+                btn_popular = (LinearLayout) itemView.findViewById(R.id.view_header_store_button_popular);
+                icon_categories = (ImageButton) itemView.findViewById(R.id.view_header_store_btn_categories_icon);
+                icon_new = (ImageButton) itemView.findViewById(R.id.view_header_store_btn_new_icon);
+                icon_popular = (ImageButton) itemView.findViewById(R.id.view_header_store_btn_popular_icon);
+                text_categories = (ViewText) itemView.findViewById(R.id.view_header_store_btn_categories_text);
+                text_new = (ViewText) itemView.findViewById(R.id.view_header_store_btn_new_text);
+                text_popular = (ViewText) itemView.findViewById(R.id.view_header_store_btn_popular_text);
             }
         }
 
@@ -325,6 +398,10 @@ public class FragmentStore extends BaseFragment {
             product_client.clear();
             product_price.clear();
             product_example.clear();
+        }
+
+        public boolean isHeader(int position) {
+            return position == 0;
         }
 
     }

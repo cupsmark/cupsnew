@@ -36,4 +36,8 @@
 
     <string name="hello_world">Hello world!</string>
 
+    <string name="store_header_categories">Categories</string>
+    <string name="store_header_newstickers">New Stickers</string>
+    <string name="store_header_popular">Popular</string>
+
 </resources>

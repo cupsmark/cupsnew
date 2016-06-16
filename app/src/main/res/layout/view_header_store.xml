@@ -1,12 +1,127 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/base_white">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/view_header_store_container_fragment">
+        android:layout_height="wrap_content"
+        android:id="@+id/view_header_store_slider">
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:background="@drawable/border_bottom_gray"
+        android:layout_marginTop="10dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="20dp"
+            android:id="@+id/view_header_store_button_categories">
+
+            <ImageButton
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@android:color/transparent"
+                android:adjustViewBounds="true"
+                android:scaleType="centerInside"
+                android:contentDescription="@string/app_name"
+                android:layout_gravity="center_horizontal"
+                android:padding="5dp"
+                android:src="@drawable/icon_categories"
+                android:id="@+id/view_header_store_btn_categories_icon"/>
+
+            <com.cupslicenew.view.ViewText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/base_pink"
+                android:textSize="15sp"
+                android:text="@string/store_header_categories"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="5dp"
+                android:id="@+id/view_header_store_btn_categories_text"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="20dp"
+            android:id="@+id/view_header_store_button_new">
+
+            <ImageButton
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@android:color/transparent"
+                android:adjustViewBounds="true"
+                android:scaleType="centerInside"
+                android:contentDescription="@string/app_name"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/icon_newsticker"
+                android:id="@+id/view_header_store_btn_new_icon"/>
+
+            <com.cupslicenew.view.ViewText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/base_pink"
+                android:textSize="15sp"
+                android:text="@string/store_header_newstickers"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="5dp"
+                android:id="@+id/view_header_store_btn_new_text"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="20dp"
+            android:id="@+id/view_header_store_button_popular">
+
+            <ImageButton
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@android:color/transparent"
+                android:adjustViewBounds="true"
+                android:scaleType="centerInside"
+                android:contentDescription="@string/app_name"
+                android:layout_gravity="center_horizontal"
+                android:padding="5dp"
+                android:src="@drawable/icon_favorite"
+                android:id="@+id/view_header_store_btn_popular_icon"/>
+
+            <com.cupslicenew.view.ViewText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/base_pink"
+                android:textSize="15sp"
+                android:text="@string/store_header_popular"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="5dp"
+                android:id="@+id/view_header_store_btn_popular_text"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
 
     </RelativeLayout>
 

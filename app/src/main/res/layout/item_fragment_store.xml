@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/base_white">
+
+    <LinearLayout
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="5dp">
+
+        <ImageView
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:adjustViewBounds="true"
+            android:background="@color/base_gray"
+            android:scaleType="centerCrop"
+            android:layout_gravity="center_horizontal"
+            android:contentDescription="@string/app_name"
+            android:id="@+id/item_fragment_store_image"/>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <com.cupslicenew.view.ViewText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:textColor="@color/base_gray"
+                android:textSize="13sp"
+                android:text=""
+                android:layout_toLeftOf="@+id/item_fragment_store_price"
+                android:id="@+id/item_fragment_store_name"
+                android:layout_marginRight="5dp"/>
+
+            <com.cupslicenew.view.ViewText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:textColor="@color/base_pink"
+                android:textSize="13sp"
+                android:text=""
+                android:id="@+id/item_fragment_store_price"/>
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
