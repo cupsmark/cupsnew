@@ -1,8 +1,10 @@
 package com.cupslicenew.core.helper;
 
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.content.res.Configuration;
@@ -18,6 +20,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -70,6 +73,20 @@ public class HelperGlobal {
     public interface ImagePusher{
 
         void onImageResult(Bitmap src, int featureType);
+    }
+
+    public interface EditorBehavior{
+
+        void setActiveFeature(String feature);
+        void setBitmapFeature(Bitmap asset);
+        void setOptionBlend(Map<String, String> param);
+        void processFeature();
+        void updateFeature();
+        void onEditApply();
+        void onEditCancel();
+        void onUndo();
+        void onSave();
+        void pushImage(Bitmap result);
     }
 
     public interface FragmentInterface{
@@ -498,7 +515,7 @@ public class HelperGlobal {
     }
 
     public final static String getAssetsPath(String filename) {
-        return "assets://files/" + filename;
+        return "file:///android_asset/" + filename;
     }
 
     public static void sendAnalytic(Tracker tracker, String screen) {
@@ -629,4 +646,60 @@ public class HelperGlobal {
         }
     }
 
+    public static String getLastHistoryFile(Context context)
+    {
+        String files = "";
+        HelperDB db = new HelperDB(context);
+        List<MHistory> history = db.getLastHistory();
+        for(MHistory h : history)
+        {
+            files = h.get_history_files();
+        }
+        return files;
+    }
+
+    public static final int getColor(Context context, int id)
+    {
+        final int version = Build.VERSION.SDK_INT;
+        if(version >= 23)
+        {
+            return ContextCompat.getColor(context,id);
+        }
+        else
+        {
+            return context.getResources().getColor(id);
+        }
+    }
+
+    public static String doSave(BaseActivity activity, Bitmap bitmap, String dir, String filename)
+    {
+        String path = "";
+        try
+        {
+            File myDir = new File(Environment.getExternalStorageDirectory().getPath() + File.separator + dir + File.separator);
+            if(!myDir.exists())
+            {
+                myDir.mkdirs();
+            }
+
+            final File file = new File(myDir,filename);
+            if(file.exists()) file.delete();
+            final FileOutputStream _out = new FileOutputStream(file);
+
+            SharedPreferences prefs = activity.getPreferences(Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString("rate", "rated");
+            editor.commit();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, _out);
+            _out.flush();
+            _out.close();
+            path = file.getAbsolutePath().toString();
+        }
+        catch(Exception e)
+        {
+            path = "";
+            e.printStackTrace();
+        }
+        return path;
+    }
 }

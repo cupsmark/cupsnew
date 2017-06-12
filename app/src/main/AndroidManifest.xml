@@ -61,6 +61,10 @@
             android:name=".activity.MainActivity"
             android:label="@string/title_activity_main" >
         </activity>
+        <activity
+            android:name=".activity.ActivityEditor"
+            android:label="@string/title_activity_activity_editor" >
+        </activity>
     </application>
 
 </manifest>

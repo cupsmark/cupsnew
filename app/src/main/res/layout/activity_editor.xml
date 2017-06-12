@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/base_white">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/fragment_editor_topbar"
+        android:layout_alignParentTop="true">
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/fragment_editor_content"
+        android:layout_below="@+id/fragment_editor_topbar"
+        android:layout_above="@+id/fragment_editor_bottombar">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:id="@+id/fragment_editor_content_image">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/app_name"
+                android:id="@+id/fragment_editor_imageview_main"/>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:id="@+id/fragment_editor_sidemenu"
+        android:layout_alignParentLeft="true"
+        android:layout_above="@+id/fragment_editor_bottombar">
+
+        <fragment
+            android:layout_width="140dp"
+            android:layout_height="match_parent"
+            android:name="com.cupslicenew.fragment.FragmentEditorSideMenu"
+            android:id="@+id/fragment_editor_side_menu" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/fragment_editor_bottombar"
+        android:layout_alignParentBottom="true">
+        <fragment
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:name="com.cupslicenew.fragment.FragmentEditorMainMenu"
+            android:id="@+id/fragment_editor_main_menu"/>
+        <fragment
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:name="com.cupslicenew.fragment.FragmentEditorItemSupportMenu"
+            android:id="@+id/fragment_editor_item_support_menu"/>
+
+    </RelativeLayout>
+
+    <fragment
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:name="com.cupslicenew.fragment.FragmentEditorTopMenu"
+        android:id="@+id/fragment_editor_top_menu"
+        android:layout_alignParentTop="true"/>
+
+    <com.cupslicenew.view.ViewToastProcess
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:id="@+id/toast_process"
+        android:visibility="gone"/>
+
+</RelativeLayout>

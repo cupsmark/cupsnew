@@ -21,8 +21,12 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.cupslicenew.R;
+import com.cupslicenew.core.helper.HelperGlobal;
 import com.cupslicenew.core.helper.HelperImage;
 import com.cupslicenew.core.util.DisplayUtil;
+
+import jp.co.cyberagent.android.gpuimage.GPUImage;
+import jp.co.cyberagent.android.gpuimage.GPUImageOpacityFilter;
 
 
 public class ViewCoreSticker extends View {
@@ -63,17 +67,21 @@ public class ViewCoreSticker extends View {
     double opac;
     Bitmap tempBitmap;
     boolean isTouch = false;
+    Context mContext;
 
     public ViewCoreSticker(Context context) {
         this(context, null);
+        mContext = context;
     }
 
     public ViewCoreSticker(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
+        mContext = context;
     }
 
     public ViewCoreSticker(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        mContext = context;
         init();
     }
 
@@ -94,19 +102,19 @@ public class ViewCoreSticker extends View {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inScaled = false;
 
-        mControllerBitmap = icon_rotate;
+        mControllerBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.icon_sticker_rotate);
         mControllerWidth = mControllerBitmap.getWidth();
         mControllerHeight = mControllerBitmap.getHeight();
 
-        mDeleteBitmap = icon_delete;
+        mDeleteBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.icon_sticker_rotate);
         mDeleteWidth = mDeleteBitmap.getWidth();
         mDeleteHeight = mDeleteBitmap.getHeight();
 
-        mReversalHorBitmap = icon_resize;
+        mReversalHorBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.icon_sticker_resize);
         mReversalHorWidth = mReversalHorBitmap.getWidth();
         mReversalHorHeight = mReversalHorBitmap.getHeight();
 
-        mReversalVerBitmap = icon_resize;
+        mReversalVerBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.icon_sticker_resize);
         mReversalVerWidth = mReversalVerBitmap.getWidth();
         mReversalVerHeight = mReversalVerBitmap.getHeight();
 
@@ -473,51 +481,45 @@ public class ViewCoreSticker extends View {
 
 
 
-    public void setColor(int color, float op)
+    public void setColor(int color)
     {
-        this.color = color;
-        this.opac = 255;
         Bitmap r = tempBitmap;
-        mBitmap = HelperImage.setTextColor(color, r, (float) opac);
+        mBitmap = HelperImage.doColorOverlay(color, r);
         tempBitmap = mBitmap;
         invalidate();
     }
 
-    public void resetOpac()
-    {
-        opac = 255;
-    }
-    public int getColor()
-    {
-        return this.color;
-    }
 
-
-    public Bitmap getBitmapTemp()
+    public void setOpacity(final int percentage)
     {
-        return this.tempBitmap;
-    }
-
-    public void setTransparancy(final double tr, final Bitmap bm)
-    {
-        new AsyncTask<Void, Integer, Bitmap>() {
-
+        new AsyncTask<Void, Integer, String>()
+        {
+            Bitmap converted;
             @Override
-            protected Bitmap doInBackground(Void... arg0) {
-                // TODO Auto-generated method stub
-                Paint paint = new Paint();
-                paint.setFlags(Paint.FILTER_BITMAP_FLAG);
-                paint.setAlpha((int) tr);
-                Bitmap cs = Bitmap.createBitmap(bm.getWidth(), bm.getHeight(), Bitmap.Config.ARGB_8888);
-                Canvas comboImage = new Canvas(cs);
-                comboImage.drawBitmap(bm, new Matrix(), paint);
-                return cs;
+            protected void onPreExecute() {
+                super.onPreExecute();
             }
+
             @Override
-            protected void onPostExecute(Bitmap result) {
-                // TODO Auto-generated method stub
-                mBitmap = result;
-                invalidate();
+            protected String doInBackground(Void... params) {
+                Paint p = new Paint();
+                p.setFlags(Paint.FILTER_BITMAP_FLAG);
+                p.setAlpha(HelperImage.range(percentage, 100, 255));
+                Bitmap cs = Bitmap.createBitmap(tempBitmap.getWidth(), tempBitmap.getHeight(), Bitmap.Config.ARGB_8888);
+                Canvas canvas = new Canvas(cs);
+                canvas.drawBitmap(tempBitmap, new Matrix(), p);
+                converted = cs;
+                return "";
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                if(converted != null)
+                {
+                    mBitmap = converted;
+                    invalidate();
+                }
             }
         }.execute();
 

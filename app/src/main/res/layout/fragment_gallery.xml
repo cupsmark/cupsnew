@@ -34,14 +34,13 @@
 
     </RelativeLayout>
 
-    <ListView
-        android:layout_width="match_parent"
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:scrollbars="none"
-        android:id="@+id/gallery_listview"
-        android:cacheColorHint="#00000000"
-        android:dividerHeight="1dp"
-        android:divider="@color/base_white_dark"
-        android:listSelector="@drawable/selector_listview_default" />
+        android:id="@+id/gallery_recyclerview"
+        android:padding="0dp"
+        android:listSelector="@android:color/transparent"
+        android:scrollbars="none"/>
+
 
 </LinearLayout>

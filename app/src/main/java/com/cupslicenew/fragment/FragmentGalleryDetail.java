@@ -9,6 +9,9 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,10 +24,15 @@ import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.cupslicenew.R;
+import com.cupslicenew.activity.ActivityEditor;
 import com.cupslicenew.core.BaseActivity;
 import com.cupslicenew.core.BaseFragment;
+import com.cupslicenew.core.helper.HelperDB;
 import com.cupslicenew.core.helper.HelperGlobal;
 import com.cupslicenew.core.helper.HelperGoogle;
+import com.cupslicenew.core.util.RecyclerViewItemDecoration;
+import com.cupslicenew.core.view.ViewSquareImage;
+import com.cupslicenew.view.ViewLoadingDialog;
 import com.cupslicenew.view.ViewText;
 import com.google.android.gms.analytics.Tracker;
 import com.squareup.picasso.Callback;
@@ -56,7 +64,7 @@ public class FragmentGalleryDetail extends BaseFragment {
     ViewText pagetitle;
     Map<String, String> parameter;
     ImageButton imagebutton_back;
-    GridView gallery_detail_gridview;
+    RecyclerView gallery_detail_recyclerview;
     LayoutInflater inflater;
     GalleryDetailAdapter adapter;
 
@@ -99,15 +107,26 @@ public class FragmentGalleryDetail extends BaseFragment {
         inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         imagebutton_back = (ImageButton) activity.findViewById(R.id.gallery_detail_imagebutton_back);
         pagetitle = (ViewText) activity.findViewById(R.id.gallery_detail_pagetitle);
-        gallery_detail_gridview = (GridView) activity.findViewById(R.id.gallery_detail_gridview);
+        gallery_detail_recyclerview = (RecyclerView) activity.findViewById(R.id.gallery_detail_recyclerview);
 
-        gallery_detail_gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        RecyclerViewItemDecoration decoration = new RecyclerViewItemDecoration(2);
+        final GridLayoutManager recycleLayoutManager = new GridLayoutManager(activity.getApplicationContext(), 3);
+        gallery_detail_recyclerview.addItemDecoration(decoration);
+        gallery_detail_recyclerview.setHasFixedSize(true);
+        gallery_detail_recyclerview.setLayoutManager(recycleLayoutManager);
+        gallery_detail_recyclerview.setItemAnimator(new DefaultItemAnimator());
+        gallery_detail_recyclerview.setAdapter(adapter);
+        gallery_detail_recyclerview.addOnItemTouchListener(new HelperGlobal.RecyclerTouchListener(activity.getApplicationContext(), gallery_detail_recyclerview, new HelperGlobal.ClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onClick(View view, int position) {
+                chooseImage(mThumb.get(position));
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
 
             }
-        });
-        gallery_detail_gridview.setAdapter(adapter);
+        }));
         pagetitle.setText(titleDir);
         imagebutton_back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -185,58 +204,87 @@ public class FragmentGalleryDetail extends BaseFragment {
         activity.onBackPressed();
     }
 
+    private void chooseImage(final String filename)
+    {
+        new AsyncTask<Void, Integer, String>()
+        {
+            ViewLoadingDialog dialog;
+            boolean success = false;
 
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                dialog = new ViewLoadingDialog(activity);
+                dialog.setCancelable(false);
+                dialog.show();
+            }
+
+            @Override
+            protected String doInBackground(Void... params) {
+                HelperDB db = new HelperDB(activity);
+                db.resetHistory();
+                Uri uri = Uri.parse(filename);
+                File file = new File(uri.getPath().toString());
+                String newfilename = file.getAbsolutePath();
+                if(newfilename != null && !newfilename.equals(""))
+                {
+                    HelperGlobal.SetFirstHistory(activity,newfilename);
+                    success = true;
+                }
+                return "";
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                if(dialog != null && dialog.isShowing())
+                {
+                    dialog.dismiss();
+                }
+                if(success)
+                {
+                    /*Map<String, String> param = new HashMap<String, String>();
+                    FragmentEditor editor = new FragmentEditor();
+                    fragmentInterface.onNavigate(editor, param);*/
+                    Intent i = new Intent(activity, ActivityEditor.class);
+                    activity.startActivity(i);
+                }
+                if(!success)
+                {
+                    Toast.makeText(activity, "Something Wrong with your Device", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }.execute();
+    }
 
     @Override
     public String getFragmentTAG() {
         return TAG_FRAGMENT_GALLERY_DETAIL;
     }
 
-    public class GalleryDetailAdapter extends BaseAdapter {
+    public class GalleryDetailAdapter extends RecyclerView.Adapter<GalleryDetailAdapter.GalleryDetailViewHolder> {
 
         public GalleryDetailAdapter()
         {
 
         }
 
-        public void add(String path) {
-            mIds.add(path);
-            mThumb.add(path);
-        }
-        public void clear() {
-            mIds.clear();
-            mThumb.clear();
-        }
-        public void remove(int index){
-            mIds.remove(index);
-            mThumb.remove(index);
+        @Override
+        public int getItemViewType(int position) {
+            return 1;
         }
 
-        public int getCount() {
-            return mIds.size();
+        @Override
+        public GalleryDetailViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View itemView = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_fragment_gallery_detail, parent, false);
+
+            return new GalleryDetailViewHolder(itemView);
         }
 
-        public Object getItem(int position) {
-            Object[] objects = new Object[2];
-            objects[0] = mIds.get(position);
-            objects[1] = mThumb.get(position);
-            return objects;
-        }
+        @Override
+        public void onBindViewHolder(final GalleryDetailViewHolder holder, int position) {
 
-        public long getItemId(int position) {
-            return 0;
-        }
-
-        @SuppressLint("InflateParams")
-        public View getView(final int position, View view, ViewGroup parent) {
-
-            final ViewHolder holder;
-            if(view == null)
-            {
-                view = inflater.inflate(R.layout.item_fragment_gallery_detail, null);
-            }
-            holder = new ViewHolder();
-            holder.imagethumb = (ImageView) view.findViewById(R.id.item_fragment_gallery_detail_thumb);
             Picasso.with(activity).load(mThumb.get(position)).fit().centerCrop().into(holder.imagethumb, new Callback() {
                 @Override
                 public void onSuccess() {
@@ -249,13 +297,31 @@ public class FragmentGalleryDetail extends BaseFragment {
 
                 }
             });
-            view.setTag(holder);
-            return view;
+
         }
 
-        class ViewHolder{
-            ImageView imagethumb;
+
+        @Override
+        public int getItemCount() {
+            return mIds.size();
         }
 
+        public class GalleryDetailViewHolder extends RecyclerView.ViewHolder{
+            ViewSquareImage imagethumb;
+
+            public GalleryDetailViewHolder(View itemView) {
+                super(itemView);
+                imagethumb = (ViewSquareImage) itemView.findViewById(R.id.item_fragment_gallery_detail_thumbnail);
+            }
+        }
+
+        public void clear() {
+            mIds.clear();
+            mThumb.clear();
+        }
+        public void remove(int index){
+            mIds.remove(index);
+            mThumb.remove(index);
+        }
     }
 }

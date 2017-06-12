@@ -35,17 +35,13 @@
 
     </RelativeLayout>
 
-    <GridView
-        android:layout_width="match_parent"
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:id="@+id/gallery_detail_gridview"
-        android:numColumns="3"
-        android:padding="8dp"
-        android:verticalSpacing="10dp"
-        android:horizontalSpacing="10dp"
+        android:id="@+id/gallery_detail_recyclerview"
+        android:padding="0dp"
         android:listSelector="@android:color/transparent"
-        android:scrollbars="none"
-        android:fadingEdgeLength="0dp"></GridView>
+        android:scrollbars="none"/>
 
 
 </LinearLayout>

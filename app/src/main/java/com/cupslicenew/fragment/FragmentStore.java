@@ -116,6 +116,7 @@ public class FragmentStore extends BaseFragment {
 
 
         RecyclerViewItemDecoration paddingDecoration = new RecyclerViewItemDecoration(12);
+        paddingDecoration.setHaveHeader(true);
         final GridLayoutManager recycleLayoutManager = new GridLayoutManager(activity.getApplicationContext(), 2);
         recyclerView.addItemDecoration(paddingDecoration);
         recyclerView.setHasFixedSize(true);

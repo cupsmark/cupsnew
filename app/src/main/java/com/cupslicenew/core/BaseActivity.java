@@ -68,10 +68,6 @@ public class BaseActivity extends FragmentActivity implements HelperGlobal.Fragm
 
     @Override
     public void onBackPressed() {
-        boolean isNoFragment = removeFragment();
-        if(isNoFragment)
-        {
-            HelperGlobal.ExitApplication(BaseActivity.this);
-        }
+        super.onBackPressed();
     }
 }

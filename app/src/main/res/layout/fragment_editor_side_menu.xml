@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_opacity_menu">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="vertical"
+            android:background="@color/base_pink"
+            android:id="@+id/fragment_editor_side_menu_cafe"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@+id/fragment_editor_side_menu_close"
+            android:clickable="true">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:layout_gravity="center_horizontal"
+                android:contentDescription="@string/app_name"
+                android:scaleType="centerInside"
+                android:layout_marginTop="5dp"
+                android:src="@drawable/icon_cafe_white"/>
+            <com.cupslicenew.view.ViewText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:textColor="@color/base_white"
+                android:text="@string/pagetitle_store"
+                android:textSize="12sp"/>
+        </LinearLayout>
+
+        <ImageButton
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/app_name"
+            android:scaleType="centerInside"
+            android:background="@android:color/transparent"
+            android:src="@drawable/icon_close_white"
+            android:id="@+id/fragment_editor_side_menu_close"
+            android:layout_alignParentRight="true"
+            android:padding="15dp"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/base_white"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:paddingLeft="3dp"
+        android:paddingRight="3dp"
+        android:id="@+id/fragment_editor_side_menu_choose"
+        android:clickable="true">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_centerHorizontal="true">
+
+            <com.cupslicenew.view.ViewText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/base_pink"
+                android:textSize="14sp"
+                android:id="@+id/fragment_editor_side_menu_choose_title"
+                android:gravity="center_horizontal"
+                android:layout_gravity="center_vertical"/>
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:scaleType="centerInside"
+                android:layout_marginLeft="5dp"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/icon_arrow_down_gray"
+                android:padding="3dp"
+                android:id="@+id/fragment_editor_side_menu_choose_icon"/>
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/base_white"
+        android:id="@+id/fragment_editor_side_menu_listcategory"
+        android:scrollbars="none"
+        android:cacheColorHint="#00000000"
+        android:dividerHeight="1dp"
+        android:divider="@color/base_white_dark"
+        android:listSelector="@drawable/selector_listview_default"
+        android:visibility="gone"></ListView>
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/fragment_editor_side_menu_listitem"
+        android:dividerHeight="1dp"
+        android:divider="@android:color/transparent"
+        android:scrollbars="none"
+        android:cacheColorHint="#00000000"
+        android:listSelector="@android:color/transparent"></ListView>
+
+</LinearLayout>

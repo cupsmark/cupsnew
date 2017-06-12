@@ -8,6 +8,7 @@
     <string name="base_string_app_project_copyright_desc">Cupslice Photo Editor Indonesia</string>
     <string name="base_string_app_project_copyright_default">All right reserved</string>
     <string name="base_string_cancel">Cancel</string>
+    <string name="base_string_apply">Apply</string>
     <string name="base_string_yes">Yes</string>
     <string name="base_string_ok">Ok</string>
     <string name="base_string_activity_notfound">have not yet installed. Please install the latest version.</string>
@@ -39,5 +40,9 @@
     <string name="store_header_categories">Categories</string>
     <string name="store_header_newstickers">New Stickers</string>
     <string name="store_header_popular">Popular</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_activity_editor">ActivityEditor</string>
 
 </resources>

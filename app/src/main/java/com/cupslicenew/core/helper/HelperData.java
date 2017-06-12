@@ -204,6 +204,7 @@ public class HelperData {
         runFrameCategory(dbHelper);
         runFrame(dbHelper);
         runAds(dbHelper);
+        dbHelper.close();
     }
 
     private void runEffectCategory(HelperDB dbHelper)
@@ -222,7 +223,6 @@ public class HelperData {
                     dbHelper.addCategoryEffect(efcat);
                 }
             }
-            dbHelper.close();
         }
         catch(Exception e)
         {
@@ -244,9 +244,9 @@ public class HelperData {
                     ef.setEffectFile(effect_file[i]);
                     ef.setEffectCategoryID(effect_cat_id[i]);
                     ef.setEffectStatus(effect_status[i]);
+                    dbHelper.addEffect(ef);
                 }
             }
-            dbHelper.close();
         }
         catch(Exception e)
         {
@@ -279,7 +279,6 @@ public class HelperData {
                     dbHelper.updateStickerCategoryFile(sticker_category_id[i], sticker_category_file[i]);
                 }
             }
-            dbHelper.close();
         }
         catch(Exception e)
         {
@@ -314,7 +313,6 @@ public class HelperData {
                     dbHelper.deleteSticker(s);
                 }
             }
-            dbHelper.close();
         }
         catch(Exception e)
         {
@@ -338,7 +336,6 @@ public class HelperData {
                     dbHelper.addFrameCategory(fcat);
                 }
             }
-            dbHelper.close();
         }
         catch(Exception e)
         {
@@ -365,7 +362,6 @@ public class HelperData {
                     dbHelper.addFrame(frame);
                 }
             }
-            dbHelper.close();
         }
         catch(Exception e)
         {
@@ -398,7 +394,6 @@ public class HelperData {
             helper.addAds(ads1);
             helper.addAds(ads2);
         }
-        helper.close();
     }
 
 
@@ -413,7 +408,6 @@ public class HelperData {
                 set.setValue(set_value[i]);
                 db.addSet(set);
             }
-            db.close();
         }catch(Exception ex)
         {
             ex.printStackTrace();

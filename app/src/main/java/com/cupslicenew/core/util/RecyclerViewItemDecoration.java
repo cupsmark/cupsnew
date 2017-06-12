@@ -10,14 +10,30 @@ import android.view.View;
 public class RecyclerViewItemDecoration extends RecyclerView.ItemDecoration {
 
     private final int mSpace;
+    boolean isHaveHeader = false;
 
     public RecyclerViewItemDecoration(int space) {
         this.mSpace = space;
     }
+
+    public void setHaveHeader(boolean isHaveHeader)
+    {
+        this.isHaveHeader = isHaveHeader;
+    }
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
         // Add top margin only for the first item to avoid double space between items
-        if (parent.getChildAdapterPosition(view) != 0)
+        if(isHaveHeader)
+        {
+            if (parent.getChildAdapterPosition(view) != 0)
+            {
+                outRect.top = mSpace;
+                outRect.left = mSpace;
+                outRect.right = mSpace;
+                outRect.bottom = mSpace;
+            }
+        }
+        else
         {
             outRect.top = mSpace;
             outRect.left = mSpace;

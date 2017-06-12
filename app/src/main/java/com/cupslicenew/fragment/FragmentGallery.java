@@ -6,11 +6,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +31,10 @@ import com.cupslicenew.core.BaseActivity;
 import com.cupslicenew.core.BaseFragment;
 import com.cupslicenew.core.helper.HelperGlobal;
 import com.cupslicenew.core.helper.HelperGoogle;
+import com.cupslicenew.core.util.EndlessRecyclerViewScrollListener;
+import com.cupslicenew.core.util.RecyclerViewItemDecoration;
+import com.cupslicenew.core.view.ViewSquareImage;
+import com.cupslicenew.view.ViewSlideShow;
 import com.cupslicenew.view.ViewText;
 import com.github.siyamed.shapeimageview.CircularImageView;
 import com.google.android.gms.analytics.Tracker;
@@ -36,6 +44,7 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import io.fabric.sdk.android.Fabric;
@@ -51,7 +60,7 @@ public class FragmentGallery extends BaseFragment {
     public static final String TAG_FRAGMENT_GALLERY = "tag:fragment-gallery";
 
     private ArrayList<String> album_path, album_name, album_directory,album_count;
-    private ListView listview_gallery;
+    private RecyclerView recyclerView_gallery;
     Tracker tracker;
     ImageButton imagebutton_back;
     LayoutInflater inflater;
@@ -100,9 +109,9 @@ public class FragmentGallery extends BaseFragment {
         adapter = new GalleryAdapter();
         inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         imagebutton_back = (ImageButton) activity.findViewById(R.id.gallery_imagebutton_back);
-        listview_gallery = (ListView) activity.findViewById(R.id.gallery_listview);
+        recyclerView_gallery = (RecyclerView) activity.findViewById(R.id.gallery_recyclerview);
 
-        listview_gallery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        /*listview_gallery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Map<String, String> parameter = new HashMap<String, String>();
@@ -112,8 +121,30 @@ public class FragmentGallery extends BaseFragment {
                 FragmentGalleryDetail galleryDetail = new FragmentGalleryDetail();
                 fragmentInterface.onNavigate(galleryDetail, parameter);
             }
-        });
-        listview_gallery.setAdapter(adapter);
+        });*/
+        RecyclerViewItemDecoration decoration = new RecyclerViewItemDecoration(5);
+        final GridLayoutManager recycleLayoutManager = new GridLayoutManager(activity.getApplicationContext(), 2);
+        recyclerView_gallery.addItemDecoration(decoration);
+        recyclerView_gallery.setHasFixedSize(true);
+        recyclerView_gallery.setLayoutManager(recycleLayoutManager);
+        recyclerView_gallery.setItemAnimator(new DefaultItemAnimator());
+        recyclerView_gallery.setAdapter(adapter);
+        recyclerView_gallery.addOnItemTouchListener(new HelperGlobal.RecyclerTouchListener(activity.getApplicationContext(), recyclerView_gallery, new HelperGlobal.ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                Map<String, String> parameter = new HashMap<String, String>();
+                parameter.put("album_name", album_name.get(position));
+                parameter.put("album_directory", album_directory.get(position));
+                parameter.put("album_count", album_count.get(position));
+                FragmentGalleryDetail galleryDetail = new FragmentGalleryDetail();
+                fragmentInterface.onNavigate(galleryDetail, parameter);
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+
+            }
+        }));
         imagebutton_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -236,11 +267,68 @@ public class FragmentGallery extends BaseFragment {
         return TAG_FRAGMENT_GALLERY;
     }
 
-    public class GalleryAdapter extends BaseAdapter{
+    public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryViewHolder>{
+
+        private static final int TYPE_HEADER = 0;
+        private static final int TYPE_ITEM = 1;
+
 
         public  GalleryAdapter()
         {
 
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            return TYPE_ITEM;
+        }
+
+        @Override
+        public GalleryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View itemView = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_fragment_gallery, parent, false);
+
+            return new GalleryViewHolder(itemView);
+        }
+
+        @Override
+        public void onBindViewHolder(final GalleryViewHolder holder, int position) {
+
+                holder.text_name.setSemiBold();
+                holder.text_name.setText(album_name.get(position));
+                Picasso.with(activity).load(album_path.get(position)).fit().centerCrop().into(holder.imagethumb, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        holder.imagethumb.setAdjustViewBounds(true);
+                        holder.imagethumb.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                    }
+
+                    @Override
+                    public void onError() {
+
+                    }
+                });
+
+        }
+
+
+        @Override
+        public int getItemCount() {
+            return album_directory.size();
+        }
+
+        public class GalleryViewHolder extends RecyclerView.ViewHolder{
+            ViewSquareImage imagethumb;
+            ViewText text_name;
+
+            public GalleryViewHolder(View itemView) {
+                super(itemView);
+                imagethumb = (ViewSquareImage) itemView.findViewById(R.id.item_fragment_gallery_thumbnail);
+                text_name = (ViewText) itemView.findViewById(R.id.item_fragment_gallery_title);
+            }
+        }
+        public boolean isHeader(int position) {
+            return position == 0;
         }
 
         private void clear()
@@ -259,12 +347,8 @@ public class FragmentGallery extends BaseFragment {
             album_count.remove(i);
         }
 
-        @Override
-        public int getCount() {
-            return album_directory.size();
-        }
 
-        @Override
+        /*@Override
         public Object getItem(int position) {
             Object[] object = new Object[4];
             object[0] = album_path.get(position);
@@ -272,45 +356,9 @@ public class FragmentGallery extends BaseFragment {
             object[2] = album_directory.get(position);
             object[3] = album_count.get(position);
             return object;
-        }
+        }*/
 
-        @Override
-        public long getItemId(int position) {
-            return 0;
-        }
 
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            final ViewHolder holder = new ViewHolder();
-            if(convertView == null)
-            {
-                convertView = inflater.inflate(R.layout.item_fragment_gallery, null);
-            }
-            holder.text_title = (ViewText) convertView.findViewById(R.id.item_fragment_gallery_title);
-            holder.text_title.setRegular();
-            holder.text_title.setText(album_name.get(position));
-            holder.text_path = (ViewText) convertView.findViewById(R.id.item_fragment_gallery_path);
-            holder.text_path.setText(album_directory.get(position));
-            holder.image_thumb = (CircularImageView) convertView.findViewById(R.id.item_fragment_gallery_thumb);
-            Picasso.with(activity).load(album_path.get(position)).fit().centerCrop().into(holder.image_thumb, new Callback() {
-                @Override
-                public void onSuccess() {
-                    holder.image_thumb.setAdjustViewBounds(true);
-                }
-
-                @Override
-                public void onError() {
-
-                }
-            });
-            convertView.setTag(holder);
-            return convertView;
-        }
-
-        class ViewHolder{
-            ViewText text_title, text_path;
-            CircularImageView image_thumb;
-        }
     }
 
 }

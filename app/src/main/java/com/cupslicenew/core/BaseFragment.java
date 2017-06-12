@@ -50,4 +50,6 @@ public class BaseFragment extends Fragment {
     {
         return this.isSliding;
     }
+
+    public void updateFragment(){}
 }

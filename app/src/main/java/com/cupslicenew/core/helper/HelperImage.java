@@ -24,6 +24,8 @@ import android.graphics.Shader;
 import android.os.Environment;
 import android.provider.MediaStore;
 
+import com.cupslicenew.core.BaseActivity;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
@@ -34,6 +36,7 @@ import jp.co.cyberagent.android.gpuimage.GPUImage;
 import jp.co.cyberagent.android.gpuimage.GPUImageBrightnessFilter;
 import jp.co.cyberagent.android.gpuimage.GPUImageContrastFilter;
 import jp.co.cyberagent.android.gpuimage.GPUImageFilterGroup;
+import jp.co.cyberagent.android.gpuimage.GPUImageOpacityFilter;
 import jp.co.cyberagent.android.gpuimage.GPUImageSaturationFilter;
 import jp.co.cyberagent.android.gpuimage.GPUImageVignetteFilter;
 
@@ -364,29 +367,53 @@ public class HelperImage {
         return bitmapWithReflection;
     }
 
-    public static Bitmap doMerge(Bitmap src, Bitmap dst) {
+    public static Bitmap doFilter(Bitmap src, Bitmap dst) {
         Bitmap cs = null;
         Bitmap c = src;
         Bitmap s = dst;
-        int width, height = 0;
-        if(c.getWidth() > s.getWidth()) {
-            width = c.getWidth();
-            height = c.getHeight();
-        } else {
-            width = c.getWidth();
-            height = c.getHeight();
-        }
 
         Paint paint = new Paint();
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.OVERLAY));
         paint.setFlags(Paint.FILTER_BITMAP_FLAG);
 
-        cs = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        cs = Bitmap.createBitmap(c.getWidth(), c.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas comboImage = new Canvas(cs);
         comboImage.drawBitmap(c, new Matrix(), null);
-        comboImage.drawBitmap(s, null, new Rect(0, 0, width, height), paint);
+        comboImage.drawBitmap(s, null, new Rect(0, 0, c.getWidth(), c.getHeight()), paint);
         return cs;
     }
+
+    public static Bitmap doFrame(Bitmap src, Bitmap dst) {
+        Bitmap cs = null;
+        Bitmap c = src;
+        Bitmap s = dst;
+
+        Paint paint = new Paint();
+        paint.setFlags(Paint.FILTER_BITMAP_FLAG);
+
+        cs = Bitmap.createBitmap(c.getWidth(), c.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas comboImage = new Canvas(cs);
+        comboImage.drawBitmap(c, new Matrix(), null);
+        comboImage.drawBitmap(s, null, new Rect(0, 0, c.getWidth(), c.getHeight()), paint);
+        return cs;
+    }
+
+    public static Bitmap doSticker(Bitmap src, Bitmap dst) {
+        Bitmap cs = null;
+        Bitmap c = src;
+        Bitmap s = dst;
+
+        Paint paint = new Paint();
+        paint.setFlags(Paint.FILTER_BITMAP_FLAG);
+
+        cs = Bitmap.createBitmap(c.getWidth(), c.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas comboImage = new Canvas(cs);
+        comboImage.drawBitmap(c, new Matrix(), null);
+        comboImage.drawBitmap(s, null, new Rect(0, 0, c.getWidth(), c.getHeight()), paint);
+        return cs;
+    }
+
+
 
     private static Bitmap doAlpha(float alpha, Bitmap src)
     {
@@ -399,37 +426,7 @@ public class HelperImage {
         return cs;
     }
 
-    public static String doSave(Activity activity, Bitmap bitmap, String dir, String filename)
-    {
-        String path = "";
-        try
-        {
-            File myDir = new File(Environment.getExternalStorageDirectory().getPath() + File.separator + dir + File.separator);
-            if(!myDir.exists())
-            {
-                myDir.mkdirs();
-            }
 
-            final File file = new File(myDir,filename);
-            if(file.exists()) file.delete();
-            final FileOutputStream _out = new FileOutputStream(file);
-
-            SharedPreferences prefs = activity.getPreferences(Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putString("rate", "rated");
-            editor.commit();
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, _out);
-            _out.flush();
-            _out.close();
-            path = file.getAbsolutePath().toString();
-        }
-        catch(Exception e)
-        {
-            path = "";
-            e.printStackTrace();
-        }
-        return path;
-    }
 
     public static void doPushToGallery(Activity activity, File file)
     {
@@ -605,8 +602,9 @@ public class HelperImage {
         return Math.min(p_limit, Math.max(-p_limit, p_val));
     }
 
-    public static Bitmap doBrightness(GPUImage mGPUImage, Bitmap src, int value)
+    public static Bitmap doBrightness(BaseActivity activity, Bitmap src, int value)
     {
+        GPUImage mGPUImage = new GPUImage(activity);
         GPUImageBrightnessFilter bright = new GPUImageBrightnessFilter();
         bright.setBrightness(range(value, -0.4f, 0.4f));
         mGPUImage.setImage(src);
@@ -614,8 +612,9 @@ public class HelperImage {
         return mGPUImage.getBitmapWithFilterApplied();
     }
 
-    public static Bitmap doContrast(GPUImage mGPUImage, Bitmap src, int value)
+    public static Bitmap doContrast(BaseActivity activity, Bitmap src, int value)
     {
+        GPUImage mGPUImage = new GPUImage(activity);
         GPUImageContrastFilter contrast = new GPUImageContrastFilter();
         contrast.setContrast(range(value, 0.0f, 2.0f));
         mGPUImage.setImage(src);
@@ -623,8 +622,9 @@ public class HelperImage {
         return mGPUImage.getBitmapWithFilterApplied();
     }
 
-    public static Bitmap doSaturation(GPUImage mGPUImage, Bitmap src, int value)
+    public static Bitmap doSaturation(BaseActivity activity, Bitmap src, int value)
     {
+        GPUImage mGPUImage = new GPUImage(activity);
         GPUImageSaturationFilter saturation = new GPUImageSaturationFilter();
         saturation.setSaturation(range(value, 0.0f, 2.0f));
         mGPUImage.setImage(src);
@@ -636,7 +636,8 @@ public class HelperImage {
     {
         int w = src.getWidth();
         int h = src.getHeight();
-        float value = cleanValue(values, 180f) / 180f * (float) Math.PI;
+        float newVal = (values - 50) * 2;
+        float value = cleanValue(newVal, 180f) / 180f * (float) Math.PI;
 
         float cosVal = (float) Math.cos(value);
         float sinVal = (float) Math.sin(value);
@@ -683,8 +684,9 @@ public class HelperImage {
         return bitmapResult;
     }
 
-    public static Bitmap doVignette(GPUImage mGPUImage, Bitmap src, int value)
+    public static Bitmap doVignette(BaseActivity activity, Bitmap src, int value)
     {
+        GPUImage mGPUImage = new GPUImage(activity);
         PointF centerPoint = new PointF();
         centerPoint.x = 0.5f;
         centerPoint.y = 0.5f;
@@ -697,6 +699,29 @@ public class HelperImage {
         return mGPUImage.getBitmapWithFilterApplied();
     }
 
+
+    public static Bitmap doOpacity(Bitmap src, int percentage)
+    {
+        Paint p = new Paint();
+        p.setFlags(Paint.FILTER_BITMAP_FLAG);
+        p.setAlpha(HelperImage.range(percentage, 100, 255));
+        Bitmap cs = Bitmap.createBitmap(src.getWidth(), src.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(cs);
+        canvas.drawBitmap(src, new Matrix(), p);
+        return cs;
+    }
+
+    public static Bitmap doOpacityFilter(Context context, Bitmap src, int percentage)
+    {
+        Bitmap result;
+        GPUImage mGPUImage = new GPUImage(context);
+        GPUImageOpacityFilter opacityFilter = new GPUImageOpacityFilter();
+        opacityFilter.setOpacity(HelperImage.range(percentage, 0.0f, 1.0f));
+        mGPUImage.setImage(src);
+        mGPUImage.setFilter(opacityFilter);
+        result = mGPUImage.getBitmapWithFilterApplied();
+        return result;
+    }
 
 }
 

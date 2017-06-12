@@ -1,43 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="10dp">
+    android:layout_height="wrap_content">
 
-    <com.github.siyamed.shapeimageview.CircularImageView
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:id="@+id/item_fragment_gallery_thumb"
-        android:adjustViewBounds="true"
-        android:scaleType="centerInside"
-        android:contentDescription="@string/app_name"
-        app:siBorderAlpha="0.0"
-        app:siBorderColor="@android:color/transparent"
-        app:siBorderWidth="3dp"
-        android:layout_gravity="center_vertical"/>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
+    <com.cupslicenew.core.view.ViewSquareImage
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_gravity="center_vertical"
-        android:layout_marginLeft="10dp">
+        android:scaleType="centerCrop"
+        android:id="@+id/item_fragment_gallery_thumbnail"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/app_name"
+        android:background="@android:color/transparent"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:background="#99000000"
+        android:layout_alignParentBottom="true">
 
         <com.cupslicenew.view.ViewText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/base_gray"
-            android:textSize="16sp"
-            android:id="@+id/item_fragment_gallery_title"/>
-        <com.cupslicenew.view.ViewText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/base_gray"
-            android:textSize="14sp"
-            android:id="@+id/item_fragment_gallery_path"/>
+            android:textSize="15sp"
+            android:layout_centerInParent="true"
+            android:id="@+id/item_fragment_gallery_title"
+            android:textColor="@color/base_white"
+            android:text="@string/app_name"/>
+    </RelativeLayout>
 
-    </LinearLayout>
-
-</LinearLayout>
+</RelativeLayout>
